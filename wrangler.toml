@@ -6,4 +6,4 @@ compatibility_date = "2025-04-23"
 [vars]
 GITHUB_CLIENT_ID = "Ov23liiuhf99PGg2aQwM"
 GITHUB_REDIRECT_URI = "https://interview-tool.pages.dev/popup-callback"
-ALLOWED_ORIGINS = "https://interview-tool.pages.dev/"
+ALLOWED_ORIGINS = "https://interview-tool.pages.dev"
