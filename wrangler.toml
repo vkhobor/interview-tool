@@ -4,7 +4,6 @@ pages_build_output_dir = "./dist"
 compatibility_date = "2025-04-23"
 
 [vars]
-GITHUB_CLIENT_ID = "Ov23lijM0bfrnLggqQhe"
-GITHUB_CLIENT_SECRET = "573ccac8ad5e61d0db417b891d929d23a94fdf45"
-GITHUB_REDIRECT_URI = "http://localhost:8788/popup-callback"
-ALLOWED_ORIGINS = "http://localhost:8788,https://api.example.com"
+GITHUB_CLIENT_ID = "Ov23liiuhf99PGg2aQwM"
+GITHUB_REDIRECT_URI = "https://interview-tool.pages.dev/popup-callback"
+ALLOWED_ORIGINS = "https://interview-tool.pages.dev/"
