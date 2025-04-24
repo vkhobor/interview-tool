@@ -171,7 +171,7 @@ const QuestionList: React.FC = () => {
                 </Badge>
               </Title>
 
-              <Accordion variant="separated">
+              <Accordion variant="contained">
                 {tagQuestions.map((question) => (
                   <QuestionItem
                     key={question.id}
