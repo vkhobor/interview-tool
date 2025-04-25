@@ -1,5 +1,5 @@
-import React, { useEffect, useRef, useState } from "react";
-import { Accordion, Checkbox, Group, Text, Box, Badge, Textarea, List, Code } from "@mantine/core";
+import React, { useEffect, useRef } from "react";
+import { Accordion, Checkbox, Group, Text, Box, Badge, Textarea } from "@mantine/core";
 import { debounce } from "lodash";
 import { Check, ChevronDown, ChevronUp } from "lucide-react";
 import { QuestionWithState } from "../types";
@@ -12,6 +12,8 @@ interface QuestionItemProps {
   onToggleExpanded: (id: string) => void;
   onNotesChange: (id: string, notes: string) => void;
 }
+
+const MemoizedMarkdownRenderer = React.memo(MarkdownRenderer);
 
 const QuestionItem: React.FC<QuestionItemProps> = ({ question, onToggleAsked, onToggleExpanded, onNotesChange }) => {
   const inputRef = useRef<HTMLTextAreaElement>(null);
@@ -32,7 +34,7 @@ const QuestionItem: React.FC<QuestionItemProps> = ({ question, onToggleAsked, on
   const debouncedNotesChange = React.useCallback(
     debounce((id: string, value: string) => {
       onNotesChange(id, value);
-    }, 500),
+    }, 1000),
     [],
   );
 
@@ -87,7 +89,7 @@ const QuestionItem: React.FC<QuestionItemProps> = ({ question, onToggleAsked, on
 
       <Accordion.Panel>
         <Box className="transition-all duration-300" style={{ opacity: question.isExpanded ? 1 : 0.9 }}>
-          <MarkdownRenderer content={question.body} />
+          <MemoizedMarkdownRenderer content={question.body} />
 
           <Textarea
             placeholder="Add notes about the candidate's response..."

@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { useParams } from "react-router-dom";
-import { Container, Title, Text, Accordion, Group, Skeleton, Box, Paper, Badge, Button, Select } from "@mantine/core";
+import { Container, Title, Text, Accordion, Group, Skeleton, Box, Paper, Badge, Button } from "@mantine/core";
 import { Download } from "lucide-react";
 import { getQuestionsByRepository } from "../services/mockQuestionService";
 import { QuestionWithState } from "../types";
@@ -24,7 +24,6 @@ const QuestionList: React.FC = () => {
         setLoading(true);
         if (repoId) {
           const [questionsData] = await Promise.all([getQuestionsByRepository(repoId, owner!, user!.token)]);
-          console.log(questionsData);
           setQuestions(
             questionsData.map((q) => ({
               ...q,
@@ -94,7 +93,6 @@ const QuestionList: React.FC = () => {
   };
 
   const handleNotesChange = (questionId: string, notes: string) => {
-    console.log("Notes changed:", notes);
     setQuestions((prevQuestions) => prevQuestions.map((q) => (q.id === questionId ? { ...q, notes } : q)));
   };
 
