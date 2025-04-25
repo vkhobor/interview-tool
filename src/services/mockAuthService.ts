@@ -1,5 +1,5 @@
 import { User } from "../types";
-import { clientId, redirectUri, scope } from "../config";
+import { clientId, redirectUri, scope, baseUrl } from "../config";
 
 const STORAGE_KEY = "mock_github_session";
 
@@ -35,11 +35,12 @@ function openGitHubPopup(): Promise<string> {
 }
 
 async function exchangeCodeForToken(code: string): Promise<string> {
-	const response = await fetch("/oauth/exchange", {
+	const response = await fetch(`${baseUrl}/oauth/exchange`, {
 		method: "POST",
 		headers: { "Content-Type": "application/json" },
 		body: JSON.stringify({ code }),
 	});
+
 	const body = await response.json();
 	return body.body.access_token;
 }

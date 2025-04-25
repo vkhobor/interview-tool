@@ -1,9 +1,10 @@
-import React from "react";
-import { Accordion, Checkbox, Group, Text, Box, Badge, Textarea } from "@mantine/core";
+import React, { useEffect, useRef, useState } from "react";
+import { Accordion, Checkbox, Group, Text, Box, Badge, Textarea, List, Code } from "@mantine/core";
 import { debounce } from "lodash";
 import { Check, ChevronDown, ChevronUp } from "lucide-react";
 import { QuestionWithState } from "../types";
 import MarkdownRenderer from "./MarkdownRenderer";
+import "@antonz/codapi/dist/snippet.js";
 
 interface QuestionItemProps {
   question: QuestionWithState;
@@ -13,6 +14,12 @@ interface QuestionItemProps {
 }
 
 const QuestionItem: React.FC<QuestionItemProps> = ({ question, onToggleAsked, onToggleExpanded, onNotesChange }) => {
+  const inputRef = useRef<HTMLTextAreaElement>(null);
+
+  useEffect(() => {
+    inputRef.current!.value = question.notes;
+  }, [question]);
+
   const handleCheckboxClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     onToggleAsked(question.id);
@@ -22,9 +29,12 @@ const QuestionItem: React.FC<QuestionItemProps> = ({ question, onToggleAsked, on
     onToggleExpanded(question.id);
   };
 
-  const debouncedNotesChange = debounce((id: string, value: string) => {
-    onNotesChange(id, value);
-  }, 300);
+  const debouncedNotesChange = React.useCallback(
+    debounce((id: string, value: string) => {
+      onNotesChange(id, value);
+    }, 500),
+    [],
+  );
 
   const handleNotesChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     debouncedNotesChange(question.id, event.currentTarget.value);
@@ -83,6 +93,8 @@ const QuestionItem: React.FC<QuestionItemProps> = ({ question, onToggleAsked, on
             placeholder="Add notes about the candidate's response..."
             minRows={3}
             mt="md"
+            ref={inputRef}
+            defaultValue=""
             onChange={handleNotesChange}
           />
         </Box>

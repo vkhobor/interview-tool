@@ -33,6 +33,27 @@ const RepositoryPicker: React.FC = () => {
   const user = userUserStore((state) => state.user);
 
   useEffect(() => {
+    setRepositories([]);
+    setPage(1);
+    const fetchRepositories = async () => {
+      try {
+        setLoading(true);
+        const data = await getRepositories(user!.token, 1);
+        setRepositories(data);
+        setHasMore(data.length > 0);
+      } catch (error) {
+        console.error("Error fetching repositories:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchRepositories();
+  }, [user]);
+
+  useEffect(() => {
+    if (page === 1) return;
+
     const fetchRepositories = async () => {
       try {
         setLoading(true);
@@ -47,7 +68,7 @@ const RepositoryPicker: React.FC = () => {
     };
 
     fetchRepositories();
-  }, [user, page]);
+  }, [page]);
 
   const handleRepositoryClick = (repo: string, owner: string) => {
     setCurrRepo(repositories.find((x) => x.owner == owner && x.name == repo)!);

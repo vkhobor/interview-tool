@@ -10,11 +10,13 @@ export const onRequest: PagesFunction<Env> = async ({ request, env }) => {
 		allowedOrigins: env.ALLOWED_ORIGINS.split(","),
 	};
 
-	// Check for malicious request
-	if (!config.allowedOrigins.includes(origin || "")) {
-		return new Response(`${origin} is not an allowed origin.`, {
-			status: 403,
-		});
+	if (env.DEV === false) {
+		// Check for malicious request
+		if (!config.allowedOrigins.includes(origin || "")) {
+			return new Response(`${origin} is not an allowed origin.`, {
+				status: 403,
+			});
+		}
 	}
 
 	const url = "https://github.com/login/oauth/access_token";

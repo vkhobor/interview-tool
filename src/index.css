@@ -1,3 +1,79 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+codapi-snippet {
+    --toolbar-gap: 1em;
+    --toolbar-margin-bottom: 0.1em;
+    display: block;
+    line-height: 5px;
+    font-family: var(--mantine-font-family);
+}
+
+codapi-output pre {
+    margin: 0 !important;
+    padding: 0;
+    line-height: 1em;
+}
+
+codapi-toolbar {
+    line-height: 1em;
+    padding-left: var(--mantine-spacing-xs);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: start;
+    align-items: center;
+    gap: var(--toolbar-gap);
+    margin-bottom: var(--toolbar-margin-bottom);
+}
+
+codapi-toolbar > *:last-child {
+    margin-left: auto;
+}
+
+codapi-toolbar button {
+    user-select: none;
+    font-weight: 600;
+    position: relative;
+    line-height: 1;
+    text-align: center;
+    overflow: hidden;
+    width: auto;
+    cursor: pointer;
+    display: inline-block;
+    border-radius: var(--button-radius, var(--mantine-radius-default));
+    font-size: var(--button-fz, var(--mantine-font-size-md));
+    background: var(--button-bg, var(--mantine-primary-color-filled));
+    border: var(--button-bd, calc(0.0625rem * var(--mantine-scale)) solid transparent);
+    color: var(--button-color, var(--mantine-color-white));
+    height: var(--button-height, var(--button-height-md));
+    padding-inline: var(--button-padding-x, var(--button-padding-x-sm));
+    vertical-align: middle;
+}
+
+codapi-status {
+    display: block;
+    white-space: nowrap;
+}
+codapi-output {
+    position: relative;
+    display: block;
+    padding: var(--mantine-spacing-xs);
+    font-family: var(--mantine-font-family-monospace);
+    font-size: var(--mantine-font-size-xs);
+    font-family: var(--mantine-font-family-monospace);
+    background-color: var(--code-bg, var(--mantine-color-gray-1));
+    color: var(--mantine-color-black);
+}
+codapi-output[hidden] {
+    display: none;
+}
+codapi-output a[href="#close"] {
+    position: absolute;
+    top: 1em;
+    right: 1em;
+    display: inline-block;
+    width: 1.5em;
+    height: 1.5em;
+    font-size: var(--mantine-font-size-md);
+    line-height: 1.5em;
+    text-align: center;
+    text-decoration: none;
+    font-weight: bold;
+}

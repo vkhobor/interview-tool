@@ -94,6 +94,7 @@ const QuestionList: React.FC = () => {
   };
 
   const handleNotesChange = (questionId: string, notes: string) => {
+    console.log("Notes changed:", notes);
     setQuestions((prevQuestions) => prevQuestions.map((q) => (q.id === questionId ? { ...q, notes } : q)));
   };
 

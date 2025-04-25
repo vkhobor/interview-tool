@@ -1,9 +1,15 @@
-
 name = "interview-tool"
 pages_build_output_dir = "./dist"
 compatibility_date = "2025-04-23"
 
 [vars]
+GITHUB_CLIENT_ID = "Ov23lijM0bfrnLggqQhe"
+GITHUB_REDIRECT_URI = "http://localhost:8888/popup-callback"
+ALLOWED_ORIGINS = "http://localhost:8888"
+DEV = true
+
+[env.production.vars]
 GITHUB_CLIENT_ID = "Ov23liiuhf99PGg2aQwM"
 GITHUB_REDIRECT_URI = "https://interview-tool.pages.dev/popup-callback"
 ALLOWED_ORIGINS = "https://interview-tool.pages.dev"
+DEV = false
