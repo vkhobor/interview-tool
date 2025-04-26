@@ -1,7 +1,7 @@
 import "@antonz/codapi/dist/snippet.js";
 
 import { Code } from "@mantine/core";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 interface InteractiveCodeblockProps {
   className: string | undefined;
@@ -28,9 +28,7 @@ const InteractiveCodeblock: React.FC<InteractiveCodeblockProps> = ({ className, 
     }
   };
 
-  const id = btoa(children as string)
-    .replace(/[^a-zA-Z0-9]/g, "")
-    .slice(0, 70);
+  const [id] = useState<string | undefined>("z" + crypto.randomUUID().replace(/-/g, ""));
 
   useEffect(() => {
     const snip = document.querySelector(`#${id} codapi-snippet`);
