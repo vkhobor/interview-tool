@@ -25,7 +25,7 @@ function App() {
     };
 
     checkAuth();
-  }, []);
+  }, [setUser]);
 
   if (loading) {
     return <LoadingOverlay visible={true} />;

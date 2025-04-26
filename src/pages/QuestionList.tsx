@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useMemo } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Container, Title, Text, Accordion, Group, Skeleton, Box, Paper, Badge, Button } from "@mantine/core";
 import { Download } from "lucide-react";
 import { getQuestionsByRepository } from "../services/mockQuestionService";
@@ -13,6 +13,7 @@ const QuestionList: React.FC = () => {
   const { repoId, owner } = useParams<{ repoId: string; owner: string }>();
   const [questions, setQuestions] = useState<QuestionWithState[]>([]);
   const repo = useCurrRepoStore((i) => i.repo);
+  const navigate = useNavigate();
 
   const [loading, setLoading] = useState(true);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
@@ -40,8 +41,12 @@ const QuestionList: React.FC = () => {
       }
     };
 
-    fetchData();
-  }, [repoId, owner, user]);
+    if (!repo) {
+      navigate("/repositories");
+    } else {
+      fetchData();
+    }
+  }, [repoId, owner, user, navigate, repo]);
 
   const allTags = useMemo(() => {
     const tagSet = new Set<string>();
@@ -139,25 +144,24 @@ const QuestionList: React.FC = () => {
           </Text>
 
           <Paper p="md" withBorder mb="xl">
-            <Group position="apart">
-              <Box>
-                <Text size="sm" fw={500} mb={5}>
-                  Interview Progress
-                </Text>
-                <Group>
-                  <Badge color={progress === 100 ? "green" : "blue"}>
-                    {askedCount} of {totalCount} questions asked ({progress}%)
-                  </Badge>
-                </Group>
-              </Box>
-
-              <Group>
+            <Group justify="space-between">
+              <Group gap="lg">
+                <Box>
+                  <Text size="sm" fw={500} mb={5}>
+                    Interview Progress
+                  </Text>
+                  <Group>
+                    <Badge color={progress === 100 ? "green" : "blue"}>
+                      {askedCount} of {totalCount} questions asked ({progress}%)
+                    </Badge>
+                  </Group>
+                </Box>
                 <TagFilter allTags={allTags} selectedTags={selectedTags} onTagsChange={setSelectedTags} />
-
-                <Button variant="light" leftSection={<Download size={16} />} onClick={handleExport}>
-                  Export Notes
-                </Button>
               </Group>
+
+              <Button variant="light" leftSection={<Download size={16} />} onClick={handleExport}>
+                Export Notes
+              </Button>
             </Group>
           </Paper>
 
