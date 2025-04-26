@@ -7,6 +7,24 @@ It uses github as a backend:
 
 - You need a repository that your github user has access to. (Owner or Collaborator)
 - You need to add issues to the repo where you use title as interview question, body as help and context for the interview question
+
+  
+## Demo
+
+https://interview-tool.pages.dev/
+![Uptime Robot status](https://img.shields.io/uptimerobot/status/m800417139-b8874073620f25733b1f50ec)
+
+> [!WARNING]
+> You need a github account.
+> You need to create a repository that you have access to, and technical questions added as issues.
+
+## Screenshots
+
+![Repositories Screenshot](/screenshots/repos.png)
+
+![Questions Screenshot](/screenshots/questions.png)
+
+
 ## Features
 
 - View interview questions
@@ -15,23 +33,6 @@ It uses github as a backend:
 - Code snippets can be opened in separate window for sharing
 - Notes for interviewee's anwsers
     - Notes are downloadable (not saved otherwise)
-
-
-## Demo
-
-You can try it or use it here with a github account.
-
-Note: You need to create a repository that you have access to, and technical questions added as issues.
-
-https://interview-tool.pages.dev/
-![Uptime Robot status](https://img.shields.io/uptimerobot/status/m800417139-b8874073620f25733b1f50ec)
-
-
-
-## Screenshots
-
-![App Screenshot](https://via.placeholder.com/468x300?text=App+Screenshot+Here)
-
 
 ## Tech Stack
 
