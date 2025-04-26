@@ -4,7 +4,7 @@ import { AppShell, LoadingOverlay } from "@mantine/core";
 import Login from "./pages/Login";
 import RepositoryPicker from "./pages/RepositoryPicker";
 import QuestionList from "./pages/QuestionList";
-import { mockAuthService } from "./services/mockAuthService";
+import { authService } from "./services/authService";
 import PopupCallback from "./pages/PopupCallback";
 import { userUserStore } from "./state/userStore";
 import CodePopup from "./pages/CodePopup";
@@ -17,7 +17,7 @@ function App() {
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const session = await mockAuthService.getSession();
+        const session = await authService.getSession();
         setUser(session?.user || null);
       } finally {
         setLoading(false);

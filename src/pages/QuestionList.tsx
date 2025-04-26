@@ -2,7 +2,7 @@ import React, { useEffect, useState, useMemo } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Container, Title, Text, Accordion, Group, Skeleton, Box, Paper, Badge, Button } from "@mantine/core";
 import { Download } from "lucide-react";
-import { getQuestionsByRepository } from "../services/mockQuestionService";
+import { getQuestionsByRepository } from "../services/questionService";
 import { QuestionWithState } from "../types";
 import QuestionItem from "../components/QuestionItem";
 import TagFilter from "../components/TagFilter";

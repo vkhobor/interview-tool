@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Container, Title, Text, Grid, Card, Group, Badge, Skeleton, Transition, Box, Button } from "@mantine/core";
 import { Folder, Clock } from "lucide-react";
-import { getRepositories } from "../services/mockRepositoryService";
+import { getRepositories } from "../services/repositoryService";
 import { Repository } from "../types";
 import { userUserStore } from "../state/userStore";
 import { useCurrRepoStore } from "../state/currentRepositoryStore";

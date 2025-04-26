@@ -8,15 +8,6 @@ export interface AuthSession {
 	token: string;
 }
 
-const mockUser: User = {
-	token: "mock_token",
-	id: "1",
-	name: "John Doe",
-	email: "john@github.com",
-	avatarUrl:
-		"https://images.pexels.com/photos/2269872/pexels-photo-2269872.jpeg?auto=compress&cs=tinysrgb&w=64&h=64&dpr=2",
-};
-
 function openGitHubPopup(): Promise<string> {
 	const url = `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scope}`;
 
@@ -45,16 +36,17 @@ async function exchangeCodeForToken(code: string): Promise<string> {
 	return body.body.access_token;
 }
 
-export const mockAuthService = {
+export const authService = {
 	signInWithGithub: async (): Promise<AuthSession> => {
 		const code = await openGitHubPopup();
 		const token = await exchangeCodeForToken(code);
 
 		const session = {
-			user: mockUser,
+			user: {
+				token,
+			},
 			token: token,
 		};
-		session.user.token = token;
 		localStorage.setItem(STORAGE_KEY, JSON.stringify(session));
 
 		return session;

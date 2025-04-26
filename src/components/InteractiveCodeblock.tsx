@@ -35,7 +35,7 @@ const InteractiveCodeblock: React.FC<InteractiveCodeblockProps> = ({ className, 
   useEffect(() => {
     const snip = document.querySelector(`#${id} codapi-snippet`);
     const handleShare = (e: Event): void => {
-      const code = e!.target!.code;
+      const code = (e!.target! as unknown as { code: string }).code;
       window.open(
         "/code-popup?code=" + encodeURIComponent(code) + "&type=" + encodeURIComponent(className!),
         "codePopup",

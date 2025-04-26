@@ -22,9 +22,5 @@ export interface QuestionWithState extends Question {
 }
 
 export interface User {
-	id: string;
-	name: string;
-	email: string;
-	avatarUrl: string;
 	token: string;
 }

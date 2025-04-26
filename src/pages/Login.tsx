@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Container, Title, Text, Button, Paper, LoadingOverlay } from "@mantine/core";
 import { Github } from "lucide-react";
-import { mockAuthService } from "../services/mockAuthService";
+import { authService } from "../services/authService";
 import { userUserStore } from "../state/userStore";
 
 const Login: React.FC = () => {
@@ -11,7 +11,7 @@ const Login: React.FC = () => {
   const handleGithubLogin = async () => {
     try {
       setLoading(true);
-      const session = await mockAuthService.signInWithGithub();
+      const session = await authService.signInWithGithub();
       setUser(session.user);
     } catch (error) {
       console.error("Error logging in:", error);
