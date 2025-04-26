@@ -28,7 +28,7 @@ const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content }) => {
             </List>
           ),
           ol: ({ children, ...props }) => (
-            <List type="ordered" my="sm" {...props}>
+            <List my="sm" type="ordered" {...props}>
               {children}
             </List>
           ),

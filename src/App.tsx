@@ -7,6 +7,7 @@ import QuestionList from "./pages/QuestionList";
 import { mockAuthService } from "./services/mockAuthService";
 import PopupCallback from "./pages/PopupCallback";
 import { userUserStore } from "./state/userStore";
+import CodePopup from "./pages/CodePopup";
 
 function App() {
   const user = userUserStore((state) => state.user);
@@ -34,6 +35,7 @@ function App() {
     <AppShell header={{ height: 60 }} padding="md">
       <Routes>
         <Route path="/login" element={!user ? <Login /> : <Navigate to="/repositories" />} />
+        <Route path="/code-popup" element={<CodePopup />} />
         <Route path="/popup-callback" element={<PopupCallback />} />
         <Route path="/repositories" element={user ? <RepositoryPicker /> : <Navigate to="/login" />} />
         <Route path="/questions/:owner/:repoId" element={user ? <QuestionList /> : <Navigate to="/login" />} />

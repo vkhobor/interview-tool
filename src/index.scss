@@ -77,3 +77,46 @@ codapi-output a[href="#close"] {
     text-decoration: none;
     font-weight: bold;
 }
+
+.code-popup {
+    position: fixed;
+    inset: 0;
+    .code-block {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: start;
+        > :nth-child(2) {
+            flex: 1;
+            overflow-y: hidden;
+        }
+        > :nth-child(1) {
+            flex: 0 0 auto;
+        }
+    }
+
+    :not(codapi-output) > pre {
+        height: 60vh;
+    }
+
+    codapi-snippet {
+        display: flex;
+        flex-direction: column;
+        justify-content: start;
+        align-items: stretch;
+        > :nth-child(2) {
+            flex: 1;
+        }
+
+        codapi-output {
+            overflow-y: auto;
+        }
+    }
+
+    codapi-toolbar {
+        padding-left: var(--mantine-spacing-xs);
+        padding-right: var(--mantine-spacing-xs);
+        padding-top: var(--mantine-spacing-xs);
+        padding-bottom: var(--mantine-spacing-xs);
+    }
+}

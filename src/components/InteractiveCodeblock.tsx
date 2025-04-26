@@ -1,6 +1,7 @@
 import "@antonz/codapi/dist/snippet.js";
 
 import { Code } from "@mantine/core";
+import { useEffect } from "react";
 
 interface InteractiveCodeblockProps {
   className: string | undefined;
@@ -27,15 +28,38 @@ const InteractiveCodeblock: React.FC<InteractiveCodeblockProps> = ({ className, 
     }
   };
 
+  const id = btoa(children as string)
+    .replace(/[^a-zA-Z0-9]/g, "")
+    .slice(0, 70);
+
+  useEffect(() => {
+    const snip = document.querySelector(`#${id} codapi-snippet`);
+    const handleShare = (e: Event): void => {
+      const code = e!.target!.code;
+      window.open(
+        "/code-popup?code=" + encodeURIComponent(code) + "&type=" + encodeURIComponent(className!),
+        "codePopup",
+        "width=600,height=700",
+      );
+    };
+    snip!.addEventListener("popout", handleShare);
+    return () => snip!.removeEventListener("popout", handleShare);
+  }, [className, id]);
+
   const config = getSnippetConfig();
 
   return (
-    <div>
+    <div className="code-block" id={id}>
       <Code block className={className}>
         {children}
       </Code>
       {config && (
-        <codapi-snippet engine={config.engine} sandbox={config.sandbox} editor={config.editor}></codapi-snippet>
+        <codapi-snippet
+          actions="Popout:@popout"
+          engine={config.engine}
+          sandbox={config.sandbox}
+          editor={config.editor}
+        ></codapi-snippet>
       )}
     </div>
   );

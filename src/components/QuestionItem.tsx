@@ -1,10 +1,9 @@
 import React, { useEffect, useRef } from "react";
-import { Accordion, Checkbox, Group, Text, Box, Badge, Textarea } from "@mantine/core";
 import { debounce } from "lodash";
-import { Check, ChevronDown, ChevronUp } from "lucide-react";
 import { QuestionWithState } from "../types";
 import MarkdownRenderer from "./MarkdownRenderer";
 import "@antonz/codapi/dist/snippet.js";
+import { Accordion, Badge, Box, Checkbox, Group, Text, Textarea } from "@mantine/core";
 
 interface QuestionItemProps {
   question: QuestionWithState;
@@ -47,17 +46,13 @@ const QuestionItem: React.FC<QuestionItemProps> = ({ question, onToggleAsked, on
       value={question.id}
       className={`transition-all duration-200 ${question.isAsked ? "bg-gray-50" : ""}`}
     >
-      <Accordion.Control
-        onClick={handleAccordionClick}
-        icon={question.isExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
-      >
-        <Group position="apart">
+      <Accordion.Control onClick={handleAccordionClick}>
+        <Group justify="space-between" pl={3} pr={15}>
           <Group>
             <Checkbox
               checked={question.isAsked}
               onChange={() => {}}
               onClick={handleCheckboxClick}
-              icon={Check}
               color="green"
               className="transition-transform duration-200"
               styles={{
@@ -77,7 +72,7 @@ const QuestionItem: React.FC<QuestionItemProps> = ({ question, onToggleAsked, on
             </Text>
           </Group>
 
-          <Group spacing={5}>
+          <Group gap="md">
             {question.tags.map((tag) => (
               <Badge key={tag} size="sm" variant="outline" color="blue" style={{ opacity: question.isAsked ? 0.7 : 1 }}>
                 {tag}
@@ -89,12 +84,13 @@ const QuestionItem: React.FC<QuestionItemProps> = ({ question, onToggleAsked, on
 
       <Accordion.Panel>
         <Box className="transition-all duration-300" style={{ opacity: question.isExpanded ? 1 : 0.9 }}>
-          <MemoizedMarkdownRenderer content={question.body} />
+          {question.body && <MemoizedMarkdownRenderer content={question.body} />}
 
           <Textarea
             placeholder="Add notes about the candidate's response..."
             minRows={3}
-            mt="md"
+            autosize={true}
+            mt={question.body ? 17 : 0}
             ref={inputRef}
             defaultValue=""
             onChange={handleNotesChange}
