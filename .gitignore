@@ -26,5 +26,4 @@ dist-ssr
 .bolt
 .wrangler
 .dev.vars
-.dev*
 .env
