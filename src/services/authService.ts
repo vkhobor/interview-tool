@@ -26,7 +26,7 @@ function openGitHubPopup(): Promise<string> {
 }
 
 async function exchangeCodeForToken(code: string): Promise<string> {
-	const response = await fetch(`${baseUrl}/oauth/exchange`, {
+	const response = await fetch(`${baseUrl ?? ""}/oauth/exchange`, {
 		method: "POST",
 		headers: { "Content-Type": "application/json" },
 		body: JSON.stringify({ code }),
