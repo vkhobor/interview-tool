@@ -17,6 +17,7 @@ export interface Question {
 
 export interface QuestionWithState extends Question {
 	isAsked: boolean;
+	isHidden: boolean;
 	isExpanded: boolean;
 	notes: string;
 }

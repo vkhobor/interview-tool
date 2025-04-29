@@ -47,4 +47,6 @@ const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content }) => {
   );
 };
 
-export default MarkdownRenderer;
+const MemoizedMarkdownRenderer = React.memo(MarkdownRenderer);
+
+export default MemoizedMarkdownRenderer;

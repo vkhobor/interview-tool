@@ -1,23 +1,38 @@
-import React, { useEffect, useState, useMemo } from "react";
+import { Accordion, Badge, Box, Container, Skeleton, Title } from "@mantine/core";
+import { useSignals } from "@preact/signals-react/runtime";
+import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { Container, Title, Text, Accordion, Group, Skeleton, Box, Paper, Badge, Button } from "@mantine/core";
-import { Download } from "lucide-react";
-import { getQuestionsByRepository } from "../services/questionService";
-import { QuestionWithState } from "../types";
 import QuestionItem from "../components/QuestionItem";
-import TagFilter from "../components/TagFilter";
-import { userUserStore } from "../state/userStore";
+import Header from "../components/QuestionListHeader";
+import { getQuestionsByRepository } from "../services/questionService";
 import { useCurrRepoStore } from "../state/currentRepositoryStore";
+import { useQuestionsStore } from "../state/questionStore";
+import { userUserStore } from "../state/userStore";
 
 const QuestionList: React.FC = () => {
   const { repoId, owner } = useParams<{ repoId: string; owner: string }>();
-  const [questions, setQuestions] = useState<QuestionWithState[]>([]);
+  useSignals();
   const repo = useCurrRepoStore((i) => i.repo);
   const navigate = useNavigate();
+  const user = userUserStore((state) => state.user);
 
   const [loading, setLoading] = useState(true);
-  const [selectedTags, setSelectedTags] = useState<string[]>([]);
-  const user = userUserStore((state) => state.user);
+
+  const {
+    questions,
+    selectedTags,
+    filteredGroupedQuestions,
+    toggleAsked,
+    toggleExpanded,
+    updateNotes,
+    askedCount,
+    progress,
+    allTags,
+    totalCount,
+  } = useQuestionsStore({
+    questions: [],
+    selectedTags: [],
+  });
 
   useEffect(() => {
     const fetchData = async () => {
@@ -25,14 +40,13 @@ const QuestionList: React.FC = () => {
         setLoading(true);
         if (repoId) {
           const [questionsData] = await Promise.all([getQuestionsByRepository(repoId, owner!, user!.token)]);
-          setQuestions(
-            questionsData.map((q) => ({
-              ...q,
-              isAsked: false,
-              isExpanded: false,
-              notes: "",
-            })),
-          );
+          questions.value = questionsData.map((q) => ({
+            ...q,
+            isAsked: false,
+            isExpanded: false,
+            isHidden: false,
+            notes: "",
+          }));
         }
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -46,63 +60,18 @@ const QuestionList: React.FC = () => {
     } else {
       fetchData();
     }
-  }, [repoId, owner, user, navigate, repo]);
+  }, [repoId, owner, user, navigate, repo, questions]);
 
-  const allTags = useMemo(() => {
-    const tagSet = new Set<string>();
-    questions.forEach((question) => {
-      question.tags.forEach((tag) => tagSet.add(tag));
-    });
-    return Array.from(tagSet).sort();
-  }, [questions]);
+  const handleToggleAsked = toggleAsked;
 
-  const filteredQuestions = useMemo(() => {
-    if (selectedTags.length === 0) return questions;
-    return questions.filter((question) => question.tags.some((tag) => selectedTags.includes(tag)));
-  }, [questions, selectedTags]);
+  const handleToggleExpanded = toggleExpanded;
 
-  const groupedQuestions = useMemo(() => {
-    const groups: Record<string, QuestionWithState[]> = {};
-
-    if (selectedTags.length > 0) {
-      selectedTags.forEach((tag) => {
-        groups[tag] = filteredQuestions.filter((q) => q.tags.includes(tag));
-      });
-    } else {
-      allTags.forEach((tag) => {
-        groups[tag] = questions.filter((q) => q.tags.includes(tag));
-      });
-      const allGrouped = Object.entries(groups)
-        .map(([, value]) => value)
-        .flat();
-      groups["other"] = questions.filter((x) => !allGrouped.includes(x));
-    }
-
-    Object.keys(groups).forEach((key) => {
-      if (groups[key].length === 0) delete groups[key];
-    });
-
-    return groups;
-  }, [filteredQuestions, questions, allTags, selectedTags]);
-
-  const handleToggleAsked = (questionId: string) => {
-    setQuestions((prevQuestions) =>
-      prevQuestions.map((q) => (q.id === questionId ? { ...q, isAsked: !q.isAsked } : q)),
-    );
-  };
-
-  const handleToggleExpanded = (questionId: string) => {
-    setQuestions((prevQuestions) =>
-      prevQuestions.map((q) => (q.id === questionId ? { ...q, isExpanded: !q.isExpanded } : q)),
-    );
-  };
-
-  const handleNotesChange = (questionId: string, notes: string) => {
-    setQuestions((prevQuestions) => prevQuestions.map((q) => (q.id === questionId ? { ...q, notes } : q)));
+  const handleNotesChange = (id: string, notes: string) => {
+    updateNotes(id, notes);
   };
 
   const handleExport = () => {
-    const questionsWithNotes = questions.filter((q) => q.notes.trim());
+    const questionsWithNotes = questions.value.filter((q) => q.notes.trim());
     const content = questionsWithNotes.map((q) => `## ${q.title}\n\n${q.notes}\n`).join("\n---\n\n");
 
     const blob = new Blob([content], { type: "text/markdown" });
@@ -115,10 +84,6 @@ const QuestionList: React.FC = () => {
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
   };
-
-  const askedCount = questions.filter((q) => q.isAsked).length;
-  const totalCount = questions.length;
-  const progress = totalCount > 0 ? Math.round((askedCount / totalCount) * 100) : 0;
 
   if (loading) {
     return (
@@ -136,41 +101,28 @@ const QuestionList: React.FC = () => {
     <Container size="xl" py="xl">
       {repo && (
         <>
-          <Title order={1} mb="md">
-            {repo.name}
-          </Title>
-          <Text color="dimmed" mb="xl">
-            {repo.description}
-          </Text>
+          <Header
+            repo={repo}
+            progress={progress.value}
+            askedCount={askedCount.value}
+            totalCount={totalCount.value}
+            allTags={allTags.value}
+            selectedTags={selectedTags.value}
+            onTagsChange={(tags) => {
+              questions.value = questions.value.map((x) => {
+                return { ...x, isExpanded: false };
+              });
+              selectedTags.value = tags;
+            }}
+            onExport={handleExport}
+          />
 
-          <Paper p="md" withBorder mb="xl">
-            <Group justify="space-between">
-              <Group gap="lg">
-                <Box>
-                  <Text size="sm" fw={500} mb={5}>
-                    Interview Progress
-                  </Text>
-                  <Group>
-                    <Badge color={progress === 100 ? "green" : "blue"}>
-                      {askedCount} of {totalCount} questions asked ({progress}%)
-                    </Badge>
-                  </Group>
-                </Box>
-                <TagFilter allTags={allTags} selectedTags={selectedTags} onTagsChange={setSelectedTags} />
-              </Group>
-
-              <Button variant="light" leftSection={<Download size={16} />} onClick={handleExport}>
-                Export Notes
-              </Button>
-            </Group>
-          </Paper>
-
-          {Object.entries(groupedQuestions).map(([tag, tagQuestions]) => (
-            <Box key={tag} mb="xl">
+          {Object.entries(filteredGroupedQuestions.value[0]).map(([tag, tagQuestions]) => (
+            <Box key={tag} mb="xl" className={`${tagQuestions.every((q) => q.isHidden) ? "hidden" : ""}`}>
               <Title order={3} mb="md">
-                {tag}{" "}
+                {filteredGroupedQuestions.value[1] ?? tag}{" "}
                 <Badge size="sm" ml={5}>
-                  {tagQuestions.length}
+                  {tagQuestions.filter((q) => !q.isHidden).length}
                 </Badge>
               </Title>
 

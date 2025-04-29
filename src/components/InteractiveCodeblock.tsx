@@ -40,8 +40,8 @@ const InteractiveCodeblock: React.FC<InteractiveCodeblockProps> = ({ className, 
         "width=600,height=700",
       );
     };
-    snip!.addEventListener("popout", handleShare);
-    return () => snip!.removeEventListener("popout", handleShare);
+    snip?.addEventListener("popout", handleShare);
+    return () => snip?.removeEventListener("popout", handleShare);
   }, [className, id]);
 
   const config = getSnippetConfig();
