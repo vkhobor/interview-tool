@@ -18,7 +18,7 @@ const StarredFilter: React.FC<TagFilterProps> = ({ checked, onStarredSet }) => {
       </Group>
 
       <Switch
-        size="lg"
+        size="md"
         onLabel="ON"
         offLabel="OFF"
         checked={checked}
