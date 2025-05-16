@@ -1,4 +1,11 @@
-import { Accordion, Badge, Box, Container, Skeleton, Title } from "@mantine/core";
+import {
+  Accordion,
+  Badge,
+  Box,
+  Container,
+  Skeleton,
+  Title,
+} from "@mantine/core";
 import { useSignals } from "@preact/signals-react/runtime";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -29,9 +36,11 @@ const QuestionList: React.FC = () => {
     progress,
     allTags,
     totalCount,
+    isStarredFilterOn,
   } = useQuestionsStore({
     questions: [],
     selectedTags: [],
+    isStarredFilterOn: false,
   });
 
   useEffect(() => {
@@ -39,7 +48,9 @@ const QuestionList: React.FC = () => {
       try {
         setLoading(true);
         if (repoId) {
-          const [questionsData] = await Promise.all([getQuestionsByRepository(repoId, owner!, user!.token)]);
+          const [questionsData] = await Promise.all([
+            getQuestionsByRepository(repoId, owner!, user!.token),
+          ]);
           questions.value = questionsData.map((q) => ({
             ...q,
             isAsked: false,
@@ -72,7 +83,9 @@ const QuestionList: React.FC = () => {
 
   const handleExport = () => {
     const questionsWithNotes = questions.value.filter((q) => q.notes.trim());
-    const content = questionsWithNotes.map((q) => `## ${q.title}\n\n${q.notes}\n`).join("\n---\n\n");
+    const content = questionsWithNotes
+      .map((q) => `## ${q.title}\n\n${q.notes}\n`)
+      .join("\n---\n\n");
 
     const blob = new Blob([content], { type: "text/markdown" });
     const url = URL.createObjectURL(blob);
@@ -104,6 +117,10 @@ const QuestionList: React.FC = () => {
           <Header
             repo={repo}
             progress={progress.value}
+            onStarredFilterChange={(on) => {
+              isStarredFilterOn.value = on;
+            }}
+            isStarredFilter={isStarredFilterOn.value}
             askedCount={askedCount.value}
             totalCount={totalCount.value}
             allTags={allTags.value}
@@ -117,28 +134,34 @@ const QuestionList: React.FC = () => {
             onExport={handleExport}
           />
 
-          {Object.entries(filteredGroupedQuestions.value[0]).map(([tag, tagQuestions]) => (
-            <Box key={tag} mb="xl" className={`${tagQuestions.every((q) => q.isHidden) ? "hidden" : ""}`}>
-              <Title order={3} mb="md">
-                {filteredGroupedQuestions.value[1] ?? tag}{" "}
-                <Badge size="sm" ml={5}>
-                  {tagQuestions.filter((q) => !q.isHidden).length}
-                </Badge>
-              </Title>
+          {Object.entries(filteredGroupedQuestions.value[0]).map(
+            ([tag, tagQuestions]) => (
+              <Box
+                key={tag}
+                mb="xl"
+                className={`${tagQuestions.every((q) => q.isHidden) ? "hidden" : ""}`}
+              >
+                <Title order={3} mb="md">
+                  {filteredGroupedQuestions.value[1] ?? tag}{" "}
+                  <Badge size="sm" ml={5}>
+                    {tagQuestions.filter((q) => !q.isHidden).length}
+                  </Badge>
+                </Title>
 
-              <Accordion variant="contained">
-                {tagQuestions.map((question) => (
-                  <QuestionItem
-                    key={question.id}
-                    question={question}
-                    onToggleAsked={handleToggleAsked}
-                    onToggleExpanded={handleToggleExpanded}
-                    onNotesChange={handleNotesChange}
-                  />
-                ))}
-              </Accordion>
-            </Box>
-          ))}
+                <Accordion variant="contained">
+                  {tagQuestions.map((question) => (
+                    <QuestionItem
+                      key={question.id}
+                      question={question}
+                      onToggleAsked={handleToggleAsked}
+                      onToggleExpanded={handleToggleExpanded}
+                      onNotesChange={handleNotesChange}
+                    />
+                  ))}
+                </Accordion>
+              </Box>
+            ),
+          )}
         </>
       )}
     </Container>

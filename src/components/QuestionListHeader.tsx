@@ -2,6 +2,7 @@ import { Title, Paper, Button, Group, Box, Text, Badge } from "@mantine/core";
 import React from "react";
 import TagFilter from "./TagFilter";
 import { Download } from "lucide-react";
+import StarredFilter from "./StarredFilter";
 
 const Header = React.memo(
   ({
@@ -11,6 +12,8 @@ const Header = React.memo(
     totalCount,
     allTags,
     selectedTags,
+    isStarredFilter,
+    onStarredFilterChange,
     onTagsChange,
     onExport,
   }: {
@@ -20,6 +23,8 @@ const Header = React.memo(
     totalCount: number;
     allTags: string[];
     selectedTags: string[];
+    isStarredFilter: boolean;
+    onStarredFilterChange: (value: boolean) => void;
     onTagsChange: (tags: string[]) => void;
     onExport: () => void;
   }) => (
@@ -44,10 +49,22 @@ const Header = React.memo(
                 </Badge>
               </Group>
             </Box>
-            <TagFilter allTags={allTags} selectedTags={selectedTags} onTagsChange={onTagsChange} />
+            <TagFilter
+              allTags={allTags}
+              selectedTags={selectedTags}
+              onTagsChange={onTagsChange}
+            />
+            <StarredFilter
+              onStarredSet={onStarredFilterChange}
+              checked={isStarredFilter}
+            />
           </Group>
 
-          <Button variant="light" leftSection={<Download size={16} />} onClick={onExport}>
+          <Button
+            variant="light"
+            leftSection={<Download size={16} />}
+            onClick={onExport}
+          >
             Export Notes
           </Button>
         </Group>
